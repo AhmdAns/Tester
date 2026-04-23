@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npm test *)",
+      "Bash(node bin/testhelper.js --help)",
+      "Bash(node bin/testhelper.js fetch --help)"
+    ]
+  }
+}
