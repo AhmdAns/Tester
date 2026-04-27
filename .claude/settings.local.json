@@ -6,7 +6,11 @@
       "Bash(npm run *)",
       "Bash(npm test *)",
       "Bash(node bin/testhelper.js --help)",
-      "Bash(node bin/testhelper.js fetch --help)"
+      "Bash(node bin/testhelper.js fetch --help)",
+      "Bash(node -e \"import\\('@lancedb/lancedb'\\).then\\(m => console.log\\('lancedb ok:', Object.keys\\(m\\).join\\(', '\\)\\)\\).catch\\(e => console.error\\('lancedb err:', e.message\\)\\)\")",
+      "Bash(node -e \"import\\('@anthropic-ai/sdk'\\).then\\(m => console.log\\('anthropic ok'\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(node -e \"import\\('@modelcontextprotocol/sdk/server/index.js'\\).then\\(m => console.log\\('mcp ok'\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(node bin/testhelper.js context --help)"
     ]
   }
 }

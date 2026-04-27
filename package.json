@@ -12,7 +12,8 @@
     }
   },
   "bin": {
-    "testhelper": "bin/testhelper.js"
+    "testhelper": "bin/testhelper.js",
+    "testhelper-mcp": "bin/testhelper-mcp.js"
   },
   "scripts": {
     "build": "tsup",
@@ -36,8 +37,10 @@
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
     "@lancedb/lancedb": "^0.27.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "axios": "^1.7.2",
     "commander": "^12.1.0",
+    "exceljs": "^4.4.0",
     "pino": "^8.21.0",
     "pino-pretty": "^11.3.0",
     "zod": "^3.23.8"

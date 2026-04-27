@@ -23,10 +23,21 @@ const DEFAULT_CONFIG = {
   },
 };
 
+// These are local-only — binary/ephemeral, never shared via git
+const GITIGNORE_ENTRIES = [
+  '.testhelper/vectors/',
+  '.testhelper/cache/',
+  '.testhelper/publish-state/',
+];
+
+// These are shared via git — context docs and work item MDs
+const GITIGNORE_COMMENT = '# testhelper: local-only (rebuild with: testhelper context rebuild)';
+
 export async function initCommand(): Promise<void> {
   const configPath = path.join(process.cwd(), '.testhelper.json');
   const gitignorePath = path.join(process.cwd(), '.gitignore');
 
+  // Config file
   if (fs.existsSync(configPath)) {
     console.log('.testhelper.json already exists — skipping.');
   } else {
@@ -34,16 +45,29 @@ export async function initCommand(): Promise<void> {
     console.log('Created .testhelper.json');
   }
 
-  const gitignoreEntry = '.testhelper/';
-  if (fs.existsSync(gitignorePath)) {
-    const existing = fs.readFileSync(gitignorePath, 'utf-8');
-    if (!existing.includes(gitignoreEntry)) {
-      fs.appendFileSync(gitignorePath, `\n${gitignoreEntry}\n`);
-      console.log('Added .testhelper/ to .gitignore');
-    }
-  } else {
-    fs.writeFileSync(gitignorePath, `${gitignoreEntry}\n`);
-    console.log('Created .gitignore with .testhelper/');
+  // .gitignore — only ignore local-only subdirectories, not the whole .testhelper/
+  let gitignore = fs.existsSync(gitignorePath)
+    ? fs.readFileSync(gitignorePath, 'utf-8')
+    : '';
+
+  // Migrate: if old blanket entry exists, replace it with granular entries
+  if (gitignore.includes('.testhelper/\n') || gitignore.endsWith('.testhelper/')) {
+    gitignore = gitignore.replace(/\.testhelper\/\n?/g, '');
+    console.log('Migrated .gitignore: replaced .testhelper/ with granular entries');
+  }
+
+  const missing = GITIGNORE_ENTRIES.filter((entry) => !gitignore.includes(entry));
+  if (missing.length > 0) {
+    const block = ['\n' + GITIGNORE_COMMENT, ...missing].join('\n') + '\n';
+    fs.appendFileSync(gitignorePath, block);
+    console.log(`Added to .gitignore: ${missing.join(', ')}`);
+  }
+
+  // Create shared directories so git tracks them
+  for (const dir of ['.testhelper/context', '.testhelper/items']) {
+    fs.mkdirSync(path.join(process.cwd(), dir), { recursive: true });
+    const keep = path.join(process.cwd(), dir, '.gitkeep');
+    if (!fs.existsSync(keep)) fs.writeFileSync(keep, '');
   }
 
   console.log(`
@@ -57,8 +81,13 @@ Set these environment variables before running commands:
 
 Or edit .testhelper.json directly (use \${ENV_VAR} for secrets).
 
+Team sharing:
+  .testhelper/context/ and .testhelper/items/ are NOT gitignored.
+  Commit them so teammates can pull and run:
+    testhelper context rebuild
+
 Quickstart:
-  testhelper fetch --ids 12345
-  testhelper fetch --from 2024-01-01 --to 2024-01-31 --types "User Story,Bug"
+  testhelper context build --from 2024-01-01 --to 2024-12-31
+  testhelper run 12345
 `);
 }
