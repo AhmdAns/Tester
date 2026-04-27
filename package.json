@@ -1,0 +1,54 @@
+{
+  "name": "testhelper",
+  "version": "0.1.0",
+  "description": "AI-powered test engineering CLI for Azure DevOps",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "testhelper": "bin/testhelper.js",
+    "testhelper-mcp": "bin/testhelper-mcp.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run lint && npm test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "azure-devops",
+    "test-automation",
+    "mcp",
+    "claude",
+    "qa"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
+    "@lancedb/lancedb": "^0.27.2",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "axios": "^1.7.2",
+    "commander": "^12.1.0",
+    "exceljs": "^4.4.0",
+    "pino": "^8.21.0",
+    "pino-pretty": "^11.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.43",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
